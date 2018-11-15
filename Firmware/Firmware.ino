@@ -14,10 +14,22 @@ Encoder enc_h(H_A, H_B);
 Encoder enc_v(V_A, V_B);
 //   avoid using pins with LEDs attached
 
+#define BTN_L       6
+#define BTN_M       7
+#define BTN_R       8
+#define BTN_DPI     9
+#define BTN_SCROLL  10
+
+#define LED_L       14
+#define LED_M       15
+#define LED_R       16
+#define LED_DPI     17
+#define LED_SCROLL  18
+
 
 void setup() {
   Serial.begin(115200);
-  while(!Serial){}
+  // while(!Serial){}
   Serial.println("TwoKnobs Encoder Test:");
   Mouse.begin();
 }
