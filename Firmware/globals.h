@@ -1,4 +1,7 @@
-#define MOUSE_MIDULT 4
+#include "Button.h"
+
+#define MOUSE_MULT_HIGH 3
+#define MOUSE_MULT_LOW  1
 
 #define V_A 2  // Yellow
 #define V_B 3  // Green
@@ -22,28 +25,28 @@ bool TimeElapsed(unsigned long ref, unsigned long wait)
 	return result;
 }
 
-
+#define BTNS 5 // Button Count
 // Short-hand for the various arrays
-#define _SCROLL     0
-#define _DPI        1
-#define _LEFT       2
-#define _MID        3
-#define _RIGHT      4
+#define _LEFT       0
+#define _MID        1
+#define _RIGHT      2
+#define _SCROLL     3
+#define _DPI        4
 
 byte btn_pins[] = {
-    10, // Scroll
-    9,  // DPI
     6,  // L
     7,  // R
-    8   // M
+    8,  // M
+    10, // Scroll
+    9   // DPI
 };
 
 byte led_pins[] = {
-    18,  // Scroll
-    17,  // DPI
     14,  // L
     15,  // R
-    16   // M
+    16,   // M
+    18,  // Scroll
+    17  // DPI
 };
 
 volatile unsigned long last_int[] = {
@@ -54,64 +57,30 @@ volatile unsigned long last_int[] = {
     0
 };
 
-#define DO_NONE 0
-#define DO_PRESS 1
-#define DO_HOLD 2
-#define DO_RELEASE 3
-volatile byte btn_do[] = {
-    DO_NONE,  // Scroll
-    DO_NONE,  // DPI
-    DO_NONE,  // L
-    DO_NONE,  // R
-    DO_NONE   // M
+Button btn_scroll(btn_pins[_SCROLL]);
+Button btn_dpi(btn_pins[_DPI]);
+Button btn_left(btn_pins[_LEFT]);
+Button btn_mid(btn_pins[_MID]);
+Button btn_right(btn_pins[_RIGHT]);
+
+Button btns[] = {
+    btn_left,
+    btn_mid,
+    btn_right,
+    btn_scroll,
+    btn_dpi
 };
 
-#define DEBOUNCE_TIME 50
-
-void btn_isr(byte i) {
-    if (TimeElapsed(last_int[i], DEBOUNCE_TIME))
-    {
-        last_int[i] = millis();
-        bool state = bool(!digitalRead(btn_pins[i]));
-        Serial.println(state);
-
-        if(btn_do[i] == DO_NONE && state){
-            Serial.println("Press");
-            btn_do[i] = DO_PRESS;
-        }
-        else if (btn_do[i] == DO_HOLD && !state){
-            Serial.println("Release");
-            btn_do[i] = DO_RELEASE;
-        }
+void setup_btns(){
+    for(byte i=0; i<BTNS; i++){
+        btns[i].begin();
     }
 }
 
-void isr_scroll(){ btn_isr(_SCROLL); }
-void isr_dpi(){ btn_isr(_DPI); }
-void isr_l(){ btn_isr(_LEFT); }
-void isr_m(){ btn_isr(_MID); }
-void isr_r(){ btn_isr(_RIGHT); }
-
-typedef void (* isr_ptr)();
-isr_ptr _isrs[] = {
-    isr_scroll,
-    isr_dpi,
-    isr_l,
-    isr_m,
-    isr_r
-};
-
-void setup_int(byte i) {
-    pinMode(btn_pins[i], INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(btn_pins[i]), _isrs[i], CHANGE);
-}
-
-void setup_ints(){
-    setup_int(_SCROLL);
-    // setup_int(_DPI);
-    // setup_int(_LEFT);
-    // setup_int(_MID);
-    // setup_int(_RIGHT);
+void read_btns(){
+    for(byte i=0; i<BTNS; i++){
+        btns[i].read();
+    }
 }
 
 void setup_leds(){
