@@ -1,3 +1,4 @@
 (sym_lib_table
   (lib (name teensy)(type Legacy)(uri ${KIPRJMOD}/lib/teensy_library/teensy.lib)(options "")(descr ""))
+  (lib (name ArcadeTrackballMouse-rescue)(type Legacy)(uri ${KIPRJMOD}/ArcadeTrackballMouse-rescue.lib)(options "")(descr ""))
 )
