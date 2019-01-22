@@ -5,6 +5,7 @@ A completely unnecessary, but fun computer mouse using arcade components and a b
 # Design Files
 
 All printed parts were designed in Fusion 360 and can be viewed and downloaded here: https://a360.co/2Rxvm0l
+Or find the STL files in the `Fab` folder.
 
 # Bill of Materials
 
